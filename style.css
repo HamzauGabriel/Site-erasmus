@@ -1,552 +1,1071 @@
-/* /// 1. VARIABILE DE CULOARE (PALETĂ CORPORATE / INSTITUȚIONALĂ ELEGANTĂ) */
+
+
+
+
+/* ---------- 2. Variabile ---------- */
 :root {
-    --bg-dark: #0f172a;           /* Albastru închis profund, clasic */    
-    --card-bg: #1e293b;           /* Fundal solid, sobru și ușor de citit */
-    --card-border: #334155;       /* Linie discretă de contur argintiu-închis */
-    --primary: #38bdf8;           /* Albastru/cyan sobru (accent) */
-    --primary-soft: rgba(56, 189, 248, 0.12);
-    --text-white: #f8fafc;        /* Alb curat */
-    --text-dim: #94a3b8;          /* Gri subtil pentru detalii */
+  /* folosite i direct in HTML (style="color: var(--primary)") */
+  --primary: #58A6FF;
+  --text-dim: #8B949E;
+
+  /* suprafeÈ›e */
+  --fundal: #0D1117;
+  --bara: #010409;
+  --panou: #161B22;
+  --panou-hover: #1C2129;
+  --chenar: #30363D;
+
+  /* text */
+  --text: #E6EDF3;
+  --text-titlu: #F0F6FC;
+  --text-corp: #C9D1D9;
+  --numere-linii: #6E7681;
+
+  /* culori de sintaxÄƒ */
+  --tag: #FF7B72;
+  --atribut: #79C0FF;
+  --sir: #A5D6FF;
+  --comentariu: #8B949E;
+  --selector: #D2A8FF;
+  --numar: #FFA657;
+
+  /* accente */
+  --albastru: #1F6FEB;
+  --verde: #3FB950;
+  --verde-buton: #238636;
+  --tab-activ: #F78166;
+
+  --font-cod: "JetBrains Mono", Consolas, "Courier New", monospace;
+  --font-text: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+  --font-titlu: "Space Grotesk", "JetBrains Mono", sans-serif;
+
+  --raza: 8px;
+  --gutter: 56px; /* lungimea coloanei cu numere de linie */
 }
 
-/* /// 2. RESETARE GENERALĂ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
+/* ---------- 3. Baza ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* /// 3. BODY */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* meniul fix nu acopera titlurile */
+}
+
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-white);
-    overflow-x: hidden;
-    line-height: 1.6;
+  margin: 0;
+  padding-bottom: 26px; /* loc pentru bara de stare (footer) */
+  background: var(--fundal);
+  color: var(--text);
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* /// 4. FUNDAL VIDEO & OVERLAY */
+::selection {
+  background: rgba(56, 139, 253, 0.35);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+strong {
+  color: var(--atribut);
+  font-weight: 600;
+}
+
+h1, h2, h3 {
+  margin: 0;
+}
+
+/* ---------- 4. Fundal video (estompat, ca un ecran de editor) ---------- */
 .video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    z-index: -2;
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.1);
+  opacity: 0.25;
 }
 
 .video-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.85);
-    z-index: -1;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: rgba(13, 17, 23, 0.88);
+  /* grilÄƒ finÄƒ de editor */
+  background-image:
+    linear-gradient(rgba(48, 54, 61, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(48, 54, 61, 0.25) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* /// 5. HEADER & NAVIGAȚIE */
+/* ---------- 5. Meniul = bara de tab-uri a editorului ---------- */
 header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 8%;
-    background: rgba(15, 23, 42, 0.95);
-    border-bottom: 1px solid var(--card-border);
-    z-index: 1000;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  min-height: 48px;
+  background: rgba(1, 4, 9, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--chenar);
 }
 
 .logo {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  border-right: 1px solid var(--chenar);
+  font-family: var(--font-cod);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-titlu);
+  white-space: nowrap;
 }
 
-.logo span {
-    color: var(--primary);
+/* cele 3 butoane ale ferestrei */
+.logo::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  margin-right: 46px;
+  border-radius: 50%;
+  background: #FF5F57;
+  box-shadow: 17px 0 0 #FEBC2E, 34px 0 0 #28C840;
+  flex-shrink: 0;
+}
+
+.logo span:not(.eu-star) {
+  color: var(--primary);
 }
 
 .eu-star {
-    margin-right: 6px;
+  font-size: 16px;
+}
+
+nav {
+  display: flex;
+  overflow-x: auto;
 }
 
 nav ul {
-    display: flex;
-    list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-nav ul li {
-    margin-left: 22px;
+nav li {
+  display: flex;
 }
 
-nav ul li a {
-    color: var(--text-white);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: color 0.2s ease;
+/* fiecare link e un fisier deschis  */
+nav a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  border-left: 1px solid var(--chenar);
+  border-top: 2px solid transparent;
+  font-family: var(--font-cod);
+  font-size: 12.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-nav ul li a:hover {
-    color: var(--primary);
+nav a::before {
+  content: "<>";
+  font-size: 10px;
+  color: var(--tag);
 }
 
-/* /// 6. HERO SECTION */
+nav a:hover {
+  background: var(--fundal);
+  color: var(--text-titlu);
+  border-top-color: var(--tab-activ);
+}
+
+/* ---------- 6. HERO: SALUT! SUNT GABRIEL HAMZAU ---------- */
 #hero {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 130px 8% 50px 8%;
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - 74px);
+  padding: 60px 24px;
 }
 
 .hero-content {
-    display: flex;
-    align-items: center;
-    gap: 45px;
-    max-width: 1100px;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
+/* poza arata ca o imagine deschisa in editor */
 .profile-wrapper {
-    width: 190px;
-    height: 190px;
-    flex-shrink: 0;
+  flex-shrink: 0;
+  padding: 34px 10px 10px;
+  background: var(--panou);
+  border: 1px solid var(--chenar);
+  border-radius: var(--raza);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  position: relative;
+}
+
+.profile-wrapper::before {
+  content: "<>  profil.jpg";
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-family: var(--font-cod);
+  font-size: 11px;
+  color: var(--text-dim);
 }
 
 .profile-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--primary); 
+  width: 260px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
+/* eticheta de sus devine un comentariu HTML */
 .cyber-badge {
-    background: var(--primary-soft);
-    color: var(--primary);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    display: inline-block;
-    margin-bottom: 18px;
+  display: inline-block;
+  font-family: var(--font-cod);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--comentariu);
+  letter-spacing: 0.5px;
 }
 
-h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 2.6rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 18px;
+.cyber-badge::before {
+  content: "<!-- ";
+}
+
+.cyber-badge::after {
+  content: " -->";
+}
+
+.hero-text h1 {
+  margin: 14px 0 18px;
+  font-family: var(--font-cod);
+  font-size: clamp(34px, 5.5vw, 58px);
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--text-titlu);
+  letter-spacing: -1px;
+}
+
+/* <h1>  deasupra titlului */
+.hero-text h1::before {
+  content: '<h1 class="salut">';
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tag);
+}
+
+/* cursor care clipeÈ™te dupÄƒ nume */
+.hero-text h1::after {
+  content: "";
+  display: inline-block;
+  width: 0.5ch;
+  height: 0.85em;
+  margin-left: 8px;
+  vertical-align: -0.06em;
+  background: var(--verde);
+  animation: cursor 1s steps(1) infinite;
 }
 
 .clean-text {
-    color: var(--primary);
+  color: var(--primary);
 }
 
 .subtitle {
-    font-size: 1.05rem;
-    color: var(--text-dim);
-    margin-bottom: 30px;
-    max-width: 600px;
+  max-width: 620px;
+  margin: 0 0 30px;
+  padding-left: 14px;
+  border-left: 2px solid var(--chenar);
+  font-size: 16px;
+  color: var(--text-corp);
 }
 
-/* /// 7. BUTOANE HERO */
 .hero-buttons {
-    display: flex;
-    gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
+/* ---------- 7. Butoane ---------- */
 .btn {
-    display: inline-block;
-    padding: 12px 28px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    font-family: 'Space Grotesk', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 6px;
+  font-family: var(--font-cod);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
+.btn:active {
+  transform: scale(0.96);
+}
+
+/* butonul principal  */
 .primary-glow {
-    background: var(--primary);
-    color: #0f172a;
+  background: var(--verde-buton);
+  color: #FFFFFF;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  box-shadow: 0 0 24px -6px rgba(46, 160, 67, 0.6);
+}
+
+.primary-glow::before {
+  content: "â–¶";
+  font-size: 10px;
 }
 
 .primary-glow:hover {
-    background: #ffffff;
-    transform: translateY(-2px);
+  background: #2EA043;
+  color: #FFFFFF;
 }
 
 .secondary-btn {
-    border: 1px solid var(--primary);
-    color: var(--primary);
+  background: transparent;
+  color: var(--text-titlu);
+  border: 1px solid var(--chenar);
 }
 
 .secondary-btn:hover {
-    background: var(--primary-soft);
+  background: var(--panou-hover);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
-/* /// 8. DESIGNUL */
+/* ---------- 8. Containerul principal ---------- */
 .main-container {
-    max-width: 1050px;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
 }
 
+/* ---------- 9. Fiecare sececiune = un fisier de cod ---------- */
 .section-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    padding: 40px;
-    border-radius: 12px;
-    margin-bottom: 45px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  position: relative;          /* numerele de linie se raporteaza la el */
+  margin: 70px 0 0;
+  padding: 26px 28px 30px calc(var(--gutter) + 22px);
+  border: 1px solid var(--chenar);
+  border-radius: 0 var(--raza) var(--raza) var(--raza);
+  /* coloana din stanga pentru numere + fundalul editorului */
+  background:
+    linear-gradient(90deg, rgba(1, 4, 9, 0.55) 0 var(--gutter), var(--chenar) var(--gutter) calc(var(--gutter) + 1px), transparent calc(var(--gutter) + 1px)),
+    rgba(13, 17, 23, 0.94);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.9);
+  counter-reset: linie;
 }
 
+/* tab-ul cu numele filierului, deasupra fiecarei sectiuni */
+.section-card::before {
+  position: absolute;
+  bottom: 100%;
+  left: -1px;
+  padding: 7px 16px 6px;
+  background: var(--fundal);
+  border: 1px solid var(--chenar);
+  border-bottom: none;
+  border-top: 2px solid var(--tab-activ);
+  border-radius: var(--raza) var(--raza) 0 0;
+  font-family: var(--font-cod);
+  font-size: 12px;
+  color: var(--text-titlu);
+  white-space: nowrap;
+}
+
+#despre::before              { content: "<>  despre.html"; }
+#abilitati::before           { content: "#  abilitati.css"; }
+#traseu::before              { content: "<>  traseu.html"; }
+#galerie::before             { content: "<>  galerie.html"; }
+#diplome::before             { content: "<>  diplome.html"; }
+#participare-erasmus::before { content: "<>  erasmus.html"; }
+#INFORMATII::before          { content: "<>  informatii.html"; }
+
+/* ---------- 10. Numere de linie ----------
+   Fiecare rand de text primeste un numar in coloana din stanga. */
+.section-card .section-header,
+.section-card .subtitle-sec,
+.section-card .about-main-box > *,
+.section-card .timeline-date,
+.section-card .timeline-content > *,
+.section-card .erasmus-banner > p,
+.section-card .subsection-title,
+.section-card .press-box > *,
+.section-card .INFORMATII > p,
+.section-card .glow-list > li {
+  counter-increment: linie;
+}
+
+.section-card .section-header::before,
+.section-card .subtitle-sec::before,
+.section-card .about-main-box > *::before,
+.section-card .timeline-date::before,
+.section-card .timeline-content > *::before,
+.section-card .erasmus-banner > p::before,
+.section-card .subsection-title::before,
+.section-card .press-box > *::before,
+.section-card .INFORMATII > p::before,
+.section-card .glow-list > li::before {
+  content: counter(linie);
+  position: absolute;         
+  left: 0;
+  width: calc(var(--gutter) - 14px);
+  text-align: right;
+  font-family: var(--font-cod);
+  font-size: 12.5px;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.9;
+  color: var(--numere-linii);
+}
+
+/* ---------- 11. Antetul sectiunii: <!-- 01 --> <h2>Titlu</h2> ---------- */
 .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin-bottom: 22px;
 }
 
 .section-number {
-    background: var(--primary-soft);
-    color: var(--primary);
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    border: 1px solid rgba(56, 189, 248, 0.2);
+  font-family: var(--font-cod);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--comentariu);
 }
 
-h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.8rem;
-    color: var(--text-white);
+.section-number::before {
+  content: "<!-- ";
+}
+
+.section-number::after {
+  content: " -->";
+}
+
+.section-header h2 {
+  flex-basis: 100%;
+  font-family: var(--font-cod);
+  font-size: clamp(24px, 3.4vw, 32px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-titlu);
+  letter-spacing: -0.5px;
+}
+
+.section-header h2::before {
+  content: "<h2>";
+  margin-right: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tag);
+}
+
+.section-header h2::after {
+  content: "</h2>";
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--tag);
 }
 
 .subtitle-sec {
-    color: var(--text-dim);
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-}
-
-/* /// 9. SECȚIUNEA DESPRE MINE */
-.custom-about-grid {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 20px;
-}
-
-.about-main-box {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--card-border);
-    border-top: 3px solid var(--primary);
-    padding: 28px;
-    border-radius: 8px;
-}
-
-.box-tag {
-    font-size: 0.7rem;
-    letter-spacing: 1.5px;
-    color: var(--primary);
-    font-weight: 700;
-    margin-bottom: 10px;
-    display: block;
-}
-
-.about-main-box h3 {
-    margin-bottom: 12px;
-    color: var(--text-white);
-    font-size: 1.25rem;
-}
-
-.about-stats-column {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.stat-card-item {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    padding: 16px 18px;
-}
-
-.stat-label {
-    display: block;
-    font-size: 0.68rem;
-    color: var(--text-dim);
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-}
-
-.stat-value {
-    display: block;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-white);
-}
-
-.stat-sub {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    margin-top: 2px;
-}
-
-/* /// 10. GRILA ABILITĂȚI */
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 18px;
-}
-
-.skill-card {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--card-border);
-    padding: 24px;
-    border-radius: 8px;
-    transition: border-color 0.2s ease;
-}
-
-.skill-card:hover {
-    border-color: var(--primary);
-}
-
-.skill-icon {
-    font-size: 1.8rem;
-    margin-bottom: 12px;
-}
-
-.skill-card h3 {
-    margin-bottom: 8px;
-    font-size: 1.1rem;
-}
-
-.skill-card p {
-    color: var(--text-dim);
-    font-size: 0.88rem;
-}
-
-/* /// 11. TIMELINE & LEADERSHIP */
-.timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.timeline-item {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid var(--card-border);
-    border-left: 3px solid var(--primary);
-    padding: 20px 22px;
-    border-radius: 0 8px 8px 0;
-}
-
-.timeline-date {
-    color: var(--primary);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    letter-spacing: 0.5px;
-}
-
-.timeline-content h3 {
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-}
-
-.timeline-content p {
-    color: var(--text-dim);
-    font-size: 0.92rem;
-}
-
-/* /// 12. GALERIE FOTO & DIPLOME */
-.cyber-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-}
-
-.gallery-card {
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-}
-
-.gallery-card:hover {
-    border-color: var(--primary);
-}
-
-.gallery-card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    display: block;
-}
-
-.gallery-info {
-    padding: 12px;
-    text-align: center;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text-white);
-    background: rgba(15, 23, 42, 0.95);
-}
-
-/* /// 13. ERASMUS BANNER & SUBSENȚIUNI */
-.erasmus-banner {
-    margin-bottom: 25px;
-    background: rgba(15, 23, 42, 0.7);
-    padding: 18px 22px;
-    border-radius: 8px;
-    border: 1px solid var(--card-border);
-    border-left: 4px solid var(--primary);
-}
-
-.project-code {
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 0.85rem;
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-}
-
-.project-title {
-    font-size: 1.05rem;
-    font-weight: 600;
+  margin: -8px 0 22px;
+  font-size: 14px;
+  color: var(--text-dim);
 }
 
 .subsection-title {
-    margin-bottom: 12px;
-    color: var(--primary);
-    font-size: 1.05rem;
+  margin: 28px 0 14px;
+  font-family: var(--font-cod);
+  font-size: 16px;
+  color: var(--selector);
+}
+
+/* ---------- 12. 01  Despre mine ---------- */
+.custom-about-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 22px;
+}
+
+.about-main-box {
+  padding: 22px 24px;
+  background: var(--panou);
+  border: 1px solid var(--chenar);
+  border-radius: var(--raza);
+}
+
+.about-main-box p {
+  margin: 0;
+  color: var(--text-corp);
+}
+
+.box-tag {
+  display: block;
+  font-family: var(--font-cod);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--numar);
+}
+
+
+.about-main-box h3 {
+  margin: 6px 0 12px;
+  font-family: var(--font-cod);
+  font-size: 19px;
+  color: var(--verde);
+}
+
+.about-stats-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* fiecare card de statistica e o regula CSS */
+.stat-card-item {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 18px;
+  background: var(--panou);
+  border: 1px solid var(--chenar);
+  border-left: 3px solid var(--albastru);
+  border-radius: 6px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.stat-card-item:hover {
+  background: var(--panou-hover);
+  border-color: var(--primary);
+}
+
+.stat-label {
+  font-family: var(--font-cod);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--atribut);
+}
+
+.stat-label::after {
+  content: ":";
+  color: var(--text-corp);
+}
+
+.stat-value {
+  font-family: var(--font-cod);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--sir);
+}
+
+.stat-value::before,
+.stat-value::after {
+  content: '"';
+  color: var(--text-dim);
+}
+
+.stat-sub {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* ---------- 13. 02 ABILITATI ---------- */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.skill-card {
+  padding: 20px;
+  background: var(--panou);
+  border: 1px solid var(--chenar);
+  border-radius: var(--raza);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.skill-card:hover {
+  background: var(--panou-hover);
+  border-color: var(--selector);
+}
+
+.skill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 12px;
+  background: var(--fundal);
+  border: 1px solid var(--chenar);
+  border-radius: 6px;
+  font-size: 20px;
+}
+
+/* titlul cardului arata ca un selector CSS: .Profil Real { */
+.skill-card h3 {
+  margin-bottom: 8px;
+  font-family: var(--font-cod);
+  font-size: 15.5px;
+  color: var(--selector);
+}
+
+.skill-card h3::before {
+  content: ".";
+}
+
+.skill-card h3::after {
+  content: " {";
+  color: var(--text-corp);
+}
+
+.skill-card p {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 1px solid var(--chenar);
+  font-size: 14px;
+  color: var(--text-corp);
+}
+
+.skill-card::after {
+  content: "}";
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-cod);
+  color: var(--text-corp);
+}
+
+/* ---------- 14. 03 Parcurs & Leadership (cronologie) ---------- */
+.timeline {
+  border-left: 1px solid var(--chenar);
+  margin-left: 6px;
+}
+
+.timeline-item {
+  padding: 0 0 26px 26px;
+  /* buline albastre desenate ca fundal (position, pentru numerele de linie) */
+  background: radial-gradient(circle, var(--albastru) 0 4px, var(--fundal) 4.5px 8px, transparent 8.5px) no-repeat -9px 4px / 18px 18px;
+  margin-left: 0;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-date {
+  font-family: var(--font-cod);
+  font-size: 12px;
+  color: var(--numar);
+}
+
+.timeline-content h3 {
+  margin: 2px 0 4px;
+  font-family: var(--font-cod);
+  font-size: 17px;
+  color: var(--text-titlu);
+}
+
+.timeline-content p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ---------- 15. 04 & 05  Galerii ---------- */
+.cyber-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.gallery-card {
+  overflow: hidden;
+  background: var(--panou);
+  border: 1px solid var(--chenar);
+  border-radius: var(--raza);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: 0 16px 40px -20px rgba(56, 139, 253, 0.6);
+}
+
+.gallery-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-bottom: 1px solid var(--chenar);
+  background: var(--fundal);
+}
+
+/* textul de sub poza = atributul alt="..." */
+.gallery-info {
+  padding: 10px 14px;
+  font-family: var(--font-cod);
+  font-size: 12.5px;
+  color: var(--sir);
+}
+
+.gallery-info::before {
+  content: 'alt="';
+  color: var(--atribut);
+}
+
+.gallery-info::after {
+  content: '"';
+  color: var(--atribut);
+}
+
+/* ---------- 16. 06 · Proiect Erasmus+ ---------- */
+.erasmus-banner {
+  padding: 18px 22px;
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.16), rgba(31, 111, 235, 0.02));
+  border: 1px solid rgba(56, 139, 253, 0.4);
+  border-radius: var(--raza);
+}
+
+.project-code {
+  margin: 0;
+  font-family: var(--font-cod);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: var(--numar);
+}
+
+.project-title {
+  margin: 4px 0 0;
+  font-family: var(--font-cod);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--sir);
 }
 
 .press-box {
-    margin-top: 25px;
-    background: rgba(15, 23, 42, 0.7);
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid var(--card-border);
+  margin-top: 30px;
+  padding: 20px 22px;
+  background: var(--panou);
+  border: 1px dashed var(--chenar);
+  border-radius: var(--raza);
 }
 
 .press-box h3 {
-    font-size: 1.05rem;
-    margin-bottom: 6px;
+  font-family: var(--font-cod);
+  font-size: 16px;
+  color: var(--text-titlu);
 }
 
 .press-box p {
-    color: var(--text-dim);
-    font-size: 0.9rem;
-    margin-bottom: 15px;
+  margin: 6px 0 14px;
+  font-size: 14px;
+  color: var(--text-dim);
 }
 
-/* /// 14. INFORMAȚII ÎN PLUS */
-.glow-list {
-    list-style: none;
-    margin-top: 20px;
+/* ---------- 17. 07 CONTACT ---------- */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
 }
 
-.glow-list li {
-    margin-bottom: 12px;
+.contact-card {
     display: flex;
-    align-items: flex-start;
-    font-size: 0.98rem;
-    background: rgba(15, 23, 42, 0.6);
-    padding: 14px 18px;
-    border-radius: 8px;
-    border: 1px solid var(--card-border);
-}
-
-.glow-list li span {
-    margin-left: 10px;
-}
-
-/* /// 15. MODAL POZE */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    cursor: pointer;
+    padding: 22px;
+    background: var(--panou);
+    border: 1px solid var(--chenar);
+    border-radius: var(--raza);
+    text-decoration: none;
+    transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-3px);
+    background: var(--panou-hover);
+    border-color: var(--primary);
+    box-shadow: 0 16px 40px -20px rgba(56, 139, 253, 0.4);
+}
+
+.contact-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 12px;
+    background: var(--fundal);
+    border: 1px solid var(--chenar);
+    border-radius: 6px;
+    font-size: 20px;
+}
+
+.contact-card h3 {
+    margin: 0 0 4px;
+    font-family: var(--font-cod);
+    font-size: 16px;
+    color: var(--text-titlu);
+}
+
+.contact-card p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-dim);
+}
+
+/* Actualizare pentru selectorul tabului în editor */
+#contact::before { content: "<> contact.html"; }
+
+/* ---------- 18. Imaginea  (#modal-poza) ----------
+   Scriptul deschideImagine() pune display:flex, inchideImagine() display:none. */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 20px;
+  background: rgba(1, 4, 9, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: zoom-out;
+  animation: apare 0.2s ease;
 }
 
 .modal-content {
-    max-width: 85%;
-    max-height: 80%;
-    border-radius: 8px;
-    border: 2px solid var(--primary);
+  max-width: min(1000px, 94vw);
+  max-height: 78vh;
+  border: 1px solid var(--chenar);
+  border-radius: var(--raza);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8);
+  animation: mareste 0.25s ease;
 }
 
 #caption {
-    margin-top: 15px;
-    color: var(--text-white);
-    font-size: 1rem;
-    font-weight: 600;
+  font-family: var(--font-cod);
+  font-size: 14px;
+  color: var(--sir);
+  text-align: center;
+}
+
+#caption::before {
+  content: "// ";
+  color: var(--comentariu);
 }
 
 .inchide {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: #ffffff;
-    font-size: 35px;
-    font-weight: bold;
+  position: absolute;
+  top: 16px;
+  right: 26px;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.15s ease;
 }
 
-/* /// 16. FOOTER */
+.inchide:hover {
+  color: var(--tag);
+}
+
+/* ---------- 19. Footer = bara de stare albastra ---------- */
 footer {
-    text-align: center;
-    padding: 35px;
-    background: var(--bg-dark);
-    color: var(--text-dim);
-    font-size: 0.88rem;
-    border-top: 1px solid var(--card-border);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 26px;
+  padding: 0 14px;
+  background: var(--albastru);
+  color: #FFFFFF;
+  font-family: var(--font-cod);
+  font-size: 11px;
 }
 
-/* /// 17. RESPONSIVE */
+footer::before {
+  content: "âŽ‡ main*   âœ“ 0 erori";
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+footer p {
+  flex: 1;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+footer::after {
+  content: "UTF-8 Â· HTML/CSS Â· RO";
+  flex-shrink: 0;
+}
+
+/* ---------- 20. Bara de derulare ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--fundal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--chenar);
+  border: 2px solid var(--fundal);
+  border-radius: 10px;
+}
+
+/* ---------- 21. AnimaÈ›ii ---------- */
+@keyframes cursor {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes apare {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mareste {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- 22. TabletÄƒ ---------- */
 @media (max-width: 900px) {
-    .hero-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    .hero-buttons {
-        justify-content: center;
-    }
-    .custom-about-grid {
-        grid-template-columns: 1fr;
-    }
-    .section-card {
-        padding: 25px;
-    }
-    header {
-        padding: 15px 5%;
-    }
+  .hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 36px;
+  }
+
+  .custom-about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  header {
+    flex-direction: column;
+  }
+
+  .logo {
+    min-height: 44px;
+    border-right: none;
+    border-bottom: 1px solid var(--chenar);
+  }
+
+  nav a {
+    padding: 12px 14px;
+  }
+}
+
+/* ---------- 23. Telefon ---------- */
+@media (max-width: 600px) {
+  :root {
+    --gutter: 38px;
+  }
+
+  #hero {
+    padding: 40px 18px;
+  }
+
+  .profile-img {
+    width: 200px;
+    height: 230px;
+  }
+
+  .main-container {
+    padding: 10px 14px 50px;
+  }
+
+  .section-card {
+    padding: 22px 16px 24px calc(var(--gutter) + 14px);
+  }
+
+  .section-card .section-header::before,
+  .section-card .subtitle-sec::before,
+  .section-card .about-main-box > *::before,
+  .section-card .timeline-date::before,
+  .section-card .timeline-content > *::before,
+  .section-card .erasmus-banner > p::before,
+  .section-card .subsection-title::before,
+  .section-card .press-box > *::before,
+  .section-card .INFORMATII > p::before,
+  .section-card .glow-list > li::before {
+    width: calc(var(--gutter) - 8px);
+    font-size: 11px;
+  }
+
+  .section-header h2::before,
+  .section-header h2::after {
+    display: none;
+  }
+
+  footer::before,
+  footer::after {
+    display: none;
+  }
+
+  footer p {
+    text-align: center;
+  }
+}
+
+/*  animaÈ›ii pentru cine le dezactiveazÄ din sistem */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
